@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.Due2Mapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.Due2">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="no" property="no" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="position" property="position" jdbcType="VARCHAR"/>
+        <result column="job_salary" property="jobSalary" jdbcType="VARCHAR"/>
+        <result column="level_salary" property="levelSalary" jdbcType="VARCHAR"/>
+        <result column="bonus" property="bonus" jdbcType="VARCHAR"/>
+        <result column="allowance" property="allowance" jdbcType="VARCHAR"/>
+        <result column="month_total" property="monthTotal" jdbcType="VARCHAR"/>
+        <result column="medical_insurance" property="medicalInsurance" jdbcType="VARCHAR"/>
+        <result column="provident_fund" property="providentFund" jdbcType="VARCHAR"/>
+        <result column="tax" property="tax" jdbcType="VARCHAR"/>
+        <result column="social_insurance" property="socialInsurance" jdbcType="VARCHAR"/>
+        <result column="pay_base" property="payBase " jdbcType="VARCHAR"/>
+        <result column="in_service" property="inService" jdbcType="VARCHAR"/>
+        <result column="pay_percent" property="payPercent" jdbcType="VARCHAR"/>
+        <result column="monthly_dues" property="monthlyDues" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+</mapper>

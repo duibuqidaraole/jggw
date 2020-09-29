@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.TaskUserRelationshipMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.TaskUserRelationship">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="receiver_id" property="receiverId" jdbcType="VARCHAR"/>
+        <result column="receiver_status" property="receiverStatus" jdbcType="INTEGER"/>
+        <result column="receiver_time" property="receiverTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="CommonTaskDetailVoMap" type="com.mt.government.model.vo.CommonTaskDetailVo" extends="BaseResultMap">
+        <result column="org_name" property="receiverName" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="submit_id" property="submitId" jdbcType="INTEGER"/>
+        <result column="is_overtime" property="isOvertime" jdbcType="INTEGER"/>
+        <result column="deducted" property="deducted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="findCommonTaskDetail" resultMap="CommonTaskDetailVoMap">
+        SELECT u.org_name, t.*,u.`user_id`
+        FROM `user` u,
+        (SELECT r.*, s.submit_id, s.is_overtime, s.deducted, s.submit_time
+        FROM task_user_relationship r
+        LEFT JOIN task_submit_info s
+        ON r.task_id = s.common_task_id AND r.receiver_id = s.user_id) t
+        WHERE u.user_id = t.receiver_id AND t.task_id = #{taskId}
+        <if test="status != null">
+            AND t.receiver_status = #{status}
+        </if>
+    </select>
+</mapper>

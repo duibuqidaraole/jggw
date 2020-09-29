@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mt.government.mapper.OrganizationMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.Organization">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="org_id" jdbcType="INTEGER" property="orgId"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="org_telephone" jdbcType="VARCHAR" property="orgTelephone"/>
+        <result column="org_address" jdbcType="VARCHAR" property="orgAddress"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="ReceiversMap" type="com.mt.government.model.vo.ReceiversVo" extends="BaseResultMap">
+        <result column="user_id" jdbcType="VARCHAR" property="userId"></result>
+    </resultMap>
+    <select id="findByParentId" resultMap="BaseResultMap">
+        SELECT * FROM organization WHERE parent_id = #{parentId}
+    </select>
+    <select id="findUserIdAndChildren" resultMap="ReceiversMap">
+        SELECT u.user_id, o.*
+        FROM `user` u LEFT JOIN organization o
+        ON u.org_id = o.org_id WHERE 1 = 1
+        <if test='userId != "admin" and userId != ""'>
+            AND u.user_id = #{userId} OR o.parent_id = #{parentId}
+        </if>
+    </select>
+
+    <select id="selectByUserRole" resultMap="ReceiversMap">
+        SELECT u.user_id, o.*
+        FROM `user` u LEFT JOIN organization o
+        ON u.org_id = o.org_id WHERE 1 = 1
+        <if test="userRole != null and userRole != 3">
+            AND u.user_role = #{userRole}
+        </if>
+        <if test="userId != 'admin'">
+            AND o.parent_id = #{parentId}
+        </if>
+        <if test="userRole == 3">
+            AND u.user_role != 0
+        </if>
+    </select>
+
+    <select id="selectNoAccountOrg" resultMap="BaseResultMap">
+        SELECT u.user_id, o.org_id, o.org_name
+        FROM `user` u
+        RIGHT JOIN organization o
+        ON u.org_id = o.org_id
+        WHERE o.parent_id = #{orgId}
+        AND ISNULL(u.user_id)
+    </select>
+
+    <select id="selectByParentIdAsTreeNode" resultType="com.mt.government.model.vo.TreeVo">
+        SELECT org_id id, org_name `name`, parent_id pId, create_time param1, is_parent param2
+        FROM organization
+        WHERE parent_id = #{parentId}
+    </select>
+</mapper>

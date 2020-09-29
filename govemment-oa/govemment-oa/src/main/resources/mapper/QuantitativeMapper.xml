@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.QuantitativeMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.Quantitative">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="party_name" property="partyName" jdbcType="VARCHAR"/>
+        <result column="party_secretary" property="partySecretary" jdbcType="VARCHAR"/>
+        <result column="start_day" property="startDay" jdbcType="DATE"/>
+        <result column="end_day" property="endDay" jdbcType="DATE"/>
+        <result column="create_time" property="create_time" jdbcType="TIMESTAMP"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="deputy_secretary" property="deputySecretary" jdbcType="VARCHAR"/>
+        <result column="committee" property="committee" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectEndDayByUserId" parameterType="string" resultType="date">
+        SELECT MAX(end_day) FROM quantitative WHERE user_id = #{userId}
+    </select>
+</mapper>

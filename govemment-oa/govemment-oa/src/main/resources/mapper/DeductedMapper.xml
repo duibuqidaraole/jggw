@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.DeductedMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.Deducted">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="point" property="point" jdbcType="FLOAT"/>
+        <result column="reason" property="reason" jdbcType="VARCHAR"/>
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="DeductedListVoMap" type="com.mt.government.model.vo.DeductedListVo">
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="org_name" property="orgName" jdbcType="VARCHAR"/>
+        <result column="point" property="point" jdbcType="FLOAT"/>
+    </resultMap>
+
+    <select id="selectDeductedListVo" resultMap="DeductedListVoMap">
+        SELECT u.user_id, u.org_name, d.point
+        FROM (SELECT u.user_id, o.org_id, o.org_name
+              FROM `user` u, organization o
+              WHERE u.org_id = o.org_id AND o.parent_id = #{orgId}) u,
+        (SELECT user_id, SUM(`point`) `point` FROM deducted
+        <where>
+            <if test="startDay != null">
+                AND create_time &gt;= #{startDay}
+            </if>
+            <if test="endDay != null">
+                AND create_time &lt;= #{endDay}
+            </if>
+        </where>
+        GROUP BY user_id) d
+        WHERE u.user_id = d.user_id
+        <if test="orgName != null and orgName != ''">
+            AND u.org_name LIKE concat("%", #{orgName}, "%")
+        </if>
+    </select>
+
+
+    <select id="selectDeductedDetailVo" resultType="com.mt.government.model.vo.DeductedDetailVo">
+        SELECT d.id, d.create_by createBy, d.create_time createTime,
+        d.update_by updateBy, d.update_time updateTime, d.point, d.user_id userId,
+        d.reason, t.common_task_title taskTitle
+        FROM deducted d
+        LEFT JOIN common_task_info t
+        ON d.task_id = t.common_task_id
+        WHERE d.user_id = #{userId}
+        ORDER BY d.create_time DESC
+    </select>
+</mapper>

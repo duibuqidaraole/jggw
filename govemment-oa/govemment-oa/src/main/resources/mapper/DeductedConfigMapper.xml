@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.DeductedConfigMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.DeductedConfig">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="points_per_day" property="pointsPerDay" jdbcType="FLOAT"/>
+        <result column="max_deducted_points" property="maxDeductedPoints" jdbcType="FLOAT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+</mapper>

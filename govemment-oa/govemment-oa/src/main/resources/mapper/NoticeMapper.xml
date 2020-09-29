@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.NoticeMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.Notice">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="publisher" property="publisher" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectAllNotice" resultMap="BaseResultMap">
+        SELECT n.id, n.title, n.create_time, r.status
+        FROM notice n, notice_user r
+        WHERE n.id = r.notice_id AND r.user_id = #{userId}
+        <if test="status != null">
+            AND r.status = #{status}
+        </if>
+        <if test="title != null and title != ''">
+            AND n.title LIKE concat('%', #{title}, '%')
+        </if>
+        ORDER BY n.create_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.CommonTaskInfoMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.CommonTaskInfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="common_task_id" property="commonTaskId" jdbcType="INTEGER"/>
+        <result column="task_no" property="taskNo" jdbcType="VARCHAR"/>
+        <result column="common_task_create_time" property="commonTaskCreateTime" jdbcType="TIMESTAMP"/>
+        <result column="common_task_publisher" property="commonTaskPublisher" jdbcType="VARCHAR"/>
+        <result column="start_day" property="startDay" jdbcType="TIMESTAMP"/>
+        <result column="end_day" property="endDay" jdbcType="TIMESTAMP"/>
+        <result column="receivers" property="receivers" jdbcType="VARCHAR"/>
+        <result column="common_task_status" property="commonTaskStatus" jdbcType="INTEGER"/>
+        <result column="common_task_title" property="commonTaskTitle" jdbcType="VARCHAR"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+        <result column="comment" property="comment" jdbcType="VARCHAR"/>
+        <result column="common_task_content" property="commonTaskContent" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectMyTaskListVo" resultType="com.mt.government.model.vo.MyTaskListVo">
+        SELECT r.id, r.task_id taskId, r.receiver_id receiverId, r.receiver_status receiverStatus, r.receiver_time
+        receiverTime,
+        t.task_no taskNo, t.common_task_title commonTaskTitle,t.common_task_create_time commonTaskCreateTime,
+        t.common_task_publisher commonTaskPublisher, u.org_name orgName
+        FROM common_task_info t, task_user_relationship r, `user` u
+        WHERE t.common_task_id = r.task_id AND r.receiver_id = #{userId} AND u.user_id = t.common_task_publisher
+        <if test="status != null">
+            AND r.receiver_status = #{status}
+        </if>
+        <if test="title != null and title != ''">
+            AND t.common_task_title LIKE concat('%', #{title}, '%')
+        </if>
+        ORDER BY t.common_task_create_time DESC
+    </select>
+</mapper>

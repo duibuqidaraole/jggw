@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.User">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="user_role" property="userRole" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="user_no" property="userNo" jdbcType="VARCHAR"/>
+        <result column="user_status" property="userStatus" jdbcType="INTEGER"/>
+        <result column="user_address" property="userAddress" jdbcType="VARCHAR"/>
+        <result column="user_qq" property="userQq" jdbcType="VARCHAR"/>
+        <result column="linkman" property="linkman" jdbcType="VARCHAR"/>
+        <result column="linkman_mobile" property="linkmanMobile" jdbcType="VARCHAR"/>
+        <result column="org_id" property="orgId" jdbcType="INTEGER"/>
+        <result column="quantitative_flag" property="quantitativeFlag" jdbcType="INTEGER"/>
+        <result column="org_name" property="orgName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectUserIdAndOrgName" resultType="map">
+        select user_id userId, org_name orgName from `user`
+    </select>
+    <!-- 根据单位id查询用户 -->
+    <select id="findUserByOrdId" resultMap="BaseResultMap">
+        select * from `user` where org_id = #{orgId}
+    </select>
+
+    <select id="selectAllUserId" resultType="String">
+        SELECT user_id FROM `user`
+    </select>
+
+    <select id="selectAssignedOrgAsTree" resultType="com.mt.government.model.vo.TreeVo">
+        SELECT u.`user_id` param1, u.`org_name` `name`, u.`org_id` id, o.parent_id pId, o.is_parent param2
+        FROM `user` u, organization o
+        WHERE u.`org_id` = o.org_id
+        <if test="parentId != null">
+            AND o.parent_id = #{parentId}
+        </if>
+    </select>
+
+    <update id="updateQuantitativeFlag">
+        UPDATE `user` SET quantitative_flag = #{flag} WHERE user_id = #{userId}
+    </update>
+</mapper>

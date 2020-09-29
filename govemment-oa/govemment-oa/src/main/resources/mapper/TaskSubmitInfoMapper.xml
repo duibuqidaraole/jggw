@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mt.government.mapper.TaskSubmitInfoMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.TaskSubmitInfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="submit_id" jdbcType="INTEGER" property="submitId"/>
+        <result column="common_task_id" jdbcType="INTEGER" property="commonTaskId"/>
+        <result column="submit_title" jdbcType="VARCHAR" property="submitTitle"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="submit_content" jdbcType="VARCHAR" property="submitContent"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+        <result column="is_overtime" jdbcType="INTEGER" property="isOvertime"/>
+        <result column="deducted" property="deducted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="findSubmitTaskByUserId" parameterType="String" resultType="com.mt.government.model.TaskSubmitInfo">
+        SELECT * FROM task_submit_info WHERE
+        common_task_id IN (SELECT common_task_id FROM common_task_info WHERE common_task_publisher = #{userId})
+        AND submit_time BETWEEN (SELECT DATE_ADD(NOW(),INTERVAL -1 MONTH)) AND NOW()
+        ORDER BY submit_time DESC
+    </select>
+
+    <!-- 查找所有提交的文件 -->
+    <select id="findSubmitFilesByTaskId" resultType="String">
+        SELECT files as file FROM task_submit_info WHERE common_task_id = #{taskId} AND `files` LIKE  '%xls%'
+    </select>
+
+    <select id="selectMySubmitList" resultType="com.mt.government.model.vo.MySubmitListVo">
+        SELECT t1.*, t2.publishTime, t2.taskTitle, t2.orgName FROM
+        (SELECT s.submit_id id, s.common_task_id taskId, s.submit_title title, s.submit_time submitTime
+        FROM task_submit_info s WHERE user_id = #{userId} AND submit_title LIKE concat('%', #{title}, '%')) t1,
+        (SELECT t.common_task_id taskId, t.common_task_create_time publishTime, t.common_task_title taskTitle,
+        o.org_name orgName
+        FROM common_task_info t, `user` o
+        WHERE t.common_task_publisher = o.user_id) t2
+        WHERE t1.taskId = t2.taskId
+    </select>
+</mapper>

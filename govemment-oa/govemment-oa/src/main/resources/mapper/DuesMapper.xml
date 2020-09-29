@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.DuesMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.Dues">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="files" property="files" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectLatestRecordByUserId" resultMap="BaseResultMap">
+        SELECT * FROM dues
+        WHERE user_id = #{userId}
+        AND create_time = (SELECT MAX(create_time) FROM dues WHERE user_id = #{userId})
+    </select>
+</mapper>
