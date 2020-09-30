@@ -4,10 +4,11 @@ import com.mt.government.model.User;
 import com.mt.government.common.config.MyMapper;
 import com.mt.government.model.vo.TreeVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-
+@Repository
 public interface UserMapper extends MyMapper<User> {
     /**
      * 获取用户id和名称
@@ -45,4 +46,12 @@ public interface UserMapper extends MyMapper<User> {
      * @return 更新结果
      */
     int updateQuantitativeFlag(@Param("flag") Integer flag, @Param("userId") String userId);
+
+    /**
+     *  查询出所有的每月党费信息
+     * @return
+     */
+    List<Map> selectAllDue();
+
+    String selectOrganIdByUserId(@Param("userId") String userId);
 }

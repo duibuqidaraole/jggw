@@ -58,4 +58,25 @@
         FROM organization
         WHERE parent_id = #{parentId}
     </select>
+
+<!--每月党费统计-->
+    <select id="selectAllDue02" resultType="map">
+        SELECT sum(monthly_dues) money ,t3.org_name orgName
+        FROM due2 t1
+        LEFT JOIN user t2  on t1.user_id = t2.user_id
+        LEFT JOIN organization t3 on t2.org_id = t3.org_id
+        WHERE t3.org_id = #{orgId}
+
+    </select>
+
+    <!--每月党费统计-->
+    <select id="selectAllDue03" resultType="map">
+        SELECT sum(monthly_dues) money ,t3.org_name orgName
+        FROM due2 t1
+        LEFT JOIN user t2  on t1.user_id = t2.user_id
+        LEFT JOIN organization t3 on t2.org_id = t3.org_id
+        WHERE t3.org_id = #{orgId}
+
+    </select>
+
 </mapper>

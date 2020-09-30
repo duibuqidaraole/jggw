@@ -1,13 +1,19 @@
 package com.mt.government.controller;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import com.mt.government.common.exception.GlobalException;
 import com.mt.government.common.util.FileUtils;
+import com.mt.government.mapper.OrganizationMapper;
+import com.mt.government.mapper.UserMapper;
 import com.mt.government.model.Due2;
 import com.mt.government.model.Dues;
+import com.mt.government.model.Organization;
 import com.mt.government.model.User;
 import com.mt.government.service.DuesService;
+import com.mt.government.service.UserService;
+import com.mt.government.utils.MyExcelUtil;
 import com.mt.government.utils.Result;
 import com.mt.government.utils.ResultUtil;
 import org.apache.poi.hssf.converter.ExcelToHtmlConverter;
@@ -23,6 +29,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,8 +42,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 /**
  * 党费信息管理controller
@@ -52,9 +58,71 @@ public class DueController extends BaseController {
     @Autowired
     private DuesService duesService;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private OrganizationMapper organizationMapper;
+
     private static String EXCELDIR = "demo/";
     private static String DANGFEI = "党费样表.xlsx";
     private static String SHUOMING = "系统操作说明.docx";
+
+
+
+
+
+    /**
+     * 导出每月党费信息
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/export")
+    public void add(HttpServletRequest request,HttpServletResponse response,String userId) throws Exception {
+
+//        String userId = getCurrentUser(request).getUserId(); // 获取到userId
+
+        List<Map> mapList =new ArrayList<>();
+        String organId = null;
+
+        User user = new User();
+        user.setUserId(userId);
+        // 1、根据userId，在user表中查询出此用户的role类型  0-工委  1-一级单位 2-二级单位
+        User tempUser = userMapper.selectOne(user);
+        Integer userRole = tempUser.getUserRole();
+        if(userRole.equals(0)){ // 查询出所有的单位的每月党费
+              mapList = userMapper.selectAllDue();
+        }else if(userRole.equals(1)){ // 查询出一级单位下的所有每月党费
+            // 查询出所有的组织id
+             organId = userMapper.selectOrganIdByUserId(userId);
+            // 将组织id去组织表中查询组织名称  匹配所有的parent_id
+            Example example = new Example(Organization.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("parentId",organId);
+            // 查询出所有的组织id
+            List<Organization> list = organizationMapper.selectByExample(example);
+            // 遍历所以的组织id，统计出所有的每月党费
+            for (Organization organization : list) {
+                Integer orgId = organization.getOrgId();
+                Map map = new HashMap();
+                 map = organizationMapper.selectAllDue02(orgId);
+                 mapList.add(map);
+            }
+        }else { // 最底级单位
+            Map map = new HashMap();
+            map = organizationMapper.selectAllDue03(organId);
+            mapList.add(map);
+        }
+
+        String headArr [] = {"money","orgName"};
+        String headArrAlias [] = {"每月党费","单位名称"};
+        // 将mapList导出到excel表格中
+        MyExcelUtil.getExcel(response,mapList,"每月党费信息.xls",headArr,headArrAlias);
+
+    }
+
+
 
     /**
      * 新增党费信息

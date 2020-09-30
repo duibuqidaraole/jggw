@@ -5,9 +5,11 @@ import com.mt.government.model.vo.ReceiversVo;
 import com.mt.government.common.config.MyMapper;
 import com.mt.government.model.vo.TreeVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+import java.util.Map;
+@Repository
 public interface OrganizationMapper extends MyMapper<Organization> {
     List<Organization> findByParentId(@Param("parentId") Integer parentId);
 
@@ -44,4 +46,7 @@ public interface OrganizationMapper extends MyMapper<Organization> {
      * @return
      */
     List<TreeVo> selectByParentIdAsTreeNode(@Param("parentId") Integer parentId);
+
+    Map selectAllDue02(@Param("orgId") Integer orgId);
+    Map selectAllDue03(@Param("orgId") String organId);
 }
