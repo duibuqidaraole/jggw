@@ -8,6 +8,7 @@ import com.mt.government.service.QuantitativeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
@@ -37,10 +38,13 @@ public class QuantitativeServiceImpl implements QuantitativeService {
     }
 
     @Override
-    public List<Quantitative> findByUserId(String userId) {
+    public List<Quantitative> findByUserId(String userId, String partySecretary) {
         Example example = new Example(Quantitative.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId" , userId);
+        criteria.andEqualTo("userId", userId);
+        if (!StringUtils.isEmpty(partySecretary)) {
+            criteria.andLike("partySecretary", "%" + partySecretary + "%");
+        }
         return quantitativeMapper.selectByExample(example);
     }
 
@@ -70,6 +74,7 @@ public class QuantitativeServiceImpl implements QuantitativeService {
 
     /**
      * 更新换届提醒状态
+     *
      * @param userId 用户id
      */
     public int updateQuantitativeFlag(String userId) {

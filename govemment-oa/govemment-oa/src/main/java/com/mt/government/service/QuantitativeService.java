@@ -33,7 +33,7 @@ public interface QuantitativeService {
      * @param userId 用户id
      * @return 查询结果
      */
-    List<Quantitative> findByUserId(String userId);
+    List<Quantitative> findByUserId(String userId,String partySecretary);
 
     /**
      * 添加换届信息

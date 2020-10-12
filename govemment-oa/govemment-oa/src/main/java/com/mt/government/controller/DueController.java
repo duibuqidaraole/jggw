@@ -76,9 +76,6 @@ public class DueController extends BaseController {
     private static String SHUOMING = "系统操作说明.docx";
 
 
-
-
-
     /**
      * 导出每月党费信息
      *
@@ -86,11 +83,11 @@ public class DueController extends BaseController {
      * @return
      */
     @GetMapping("/export")
-    public void add(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public void add(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String userId = getCurrentUser(request).getUserId(); // 获取到userId
 
-        List<Map> mapList =new ArrayList<>();
+        List<Map> mapList = new ArrayList<>();
         String organId = null;
 
         User user = new User();
@@ -98,37 +95,36 @@ public class DueController extends BaseController {
         // 1、根据userId，在user表中查询出此用户的role类型  0-工委  1-一级单位 2-二级单位
         User tempUser = userMapper.selectOne(user);
         Integer userRole = tempUser.getUserRole();
-        if(userRole.equals(0)){ // 查询出所有的单位的每月党费
-              mapList = userMapper.selectAllDue();
-        }else if(userRole.equals(1)){ // 查询出一级单位下的所有每月党费
+        if (userRole.equals(0)) { // 查询出所有的单位的每月党费
+            mapList = userMapper.selectAllDue();
+        } else if (userRole.equals(1)) { // 查询出一级单位下的所有每月党费
             // 查询出所有的组织id
-             organId = userMapper.selectOrganIdByUserId(userId);
+            organId = userMapper.selectOrganIdByUserId(userId);
             // 将组织id去组织表中查询组织名称  匹配所有的parent_id
             Example example = new Example(Organization.class);
             Example.Criteria criteria = example.createCriteria();
-            criteria.andEqualTo("parentId",organId);
+            criteria.andEqualTo("parentId", organId);
             // 查询出所有的组织id
             List<Organization> list = organizationMapper.selectByExample(example);
             // 遍历所以的组织id，统计出所有的每月党费
             for (Organization organization : list) {
                 Integer orgId = organization.getOrgId();
                 Map map = new HashMap();
-                 map = organizationMapper.selectAllDue02(orgId);
-                 mapList.add(map);
+                map = organizationMapper.selectAllDue02(orgId);
+                mapList.add(map);
             }
-        }else { // 最底级单位
+        } else { // 最底级单位
             Map map = new HashMap();
             map = organizationMapper.selectAllDue03(organId);
             mapList.add(map);
         }
 
-        String headArr [] = {"money","orgName"};
-        String headArrAlias [] = {"每月党费","单位名称"};
+        String headArr[] = {"money", "orgName"};
+        String headArrAlias[] = {"每月党费", "单位名称"};
         // 将mapList导出到excel表格中
-        MyExcelUtil.getExcel(response,mapList,"每月党费信息.xls",headArr,headArrAlias);
+        MyExcelUtil.getExcel(response, mapList, "每月党费信息.xls", headArr, headArrAlias);
 
     }
-
 
 
     /**
@@ -162,12 +158,18 @@ public class DueController extends BaseController {
      * 获取用户党费信息
      */
     @GetMapping("/getDueInfo")
-    public Result getDueInfo(String userId,Integer page,Integer pageSize) {
+    public Result getDueInfo(String userId, Integer page, Integer pageSize, String name) {
         // 开启分页
         PageHelper.startPage(page, pageSize);
         Example example = new Example(Due2.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (!StringUtils.isEmpty(userId)) {
+            criteria.andEqualTo("userId", userId);
+        }
+        if (!StringUtils.isEmpty(name)) {
+            criteria.andLike("name", "%" + name + "%");
+        }
         example.orderBy("createTime").asc();
-        example.createCriteria().andEqualTo("userId", userId);
         List<Due2> due2s = due2Mapper.selectByExample(example);
 
         return ResultUtil.success(PagedResult.commonResult(due2s));
@@ -176,6 +178,7 @@ public class DueController extends BaseController {
 
     /**
      * 导入党费信息
+     *
      * @param file excel文件
      * @param type 操作类型 1：新增 2：覆盖
      */
@@ -191,8 +194,8 @@ public class DueController extends BaseController {
         }
         User user = getCurrentUser(request);
         try {
-           int ref = duesService.resolveExcelToDues(file, type, user.getUserId());
-           return ResultUtil.success(ref);
+            int ref = duesService.resolveExcelToDues(file, type, user.getUserId());
+            return ResultUtil.success(ref);
         } catch (IOException e) {
             throw new GlobalException("导入信息失败", -1);
         }
@@ -218,13 +221,13 @@ public class DueController extends BaseController {
                 filePath = EXCELDIR + SHUOMING;
                 break;
             default:
-                throw new GlobalException("参数错误，请使用正常的操作" , -1);
+                throw new GlobalException("参数错误，请使用正常的操作", -1);
         }
         try {
             // 设置响应头
             response.setCharacterEncoding("utf-8");
             response.setContentType("application/octet-stream;charset=UTF-8");
-            response.setHeader("Content-Disposition" ,
+            response.setHeader("Content-Disposition",
                     "attachment;fileName=" + FileUtils.setFileDownloadHeader(request,
                             fileName));
             // 读取文件并输出
@@ -236,7 +239,7 @@ public class DueController extends BaseController {
             IoUtil.close(in);
             IoUtil.close(out);
         } catch (Exception e) {
-            throw new GlobalException("下载党费样表失败" , -1);
+            throw new GlobalException("下载党费样表失败", -1);
         }
     }
 }

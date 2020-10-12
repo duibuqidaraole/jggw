@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -144,7 +145,7 @@ public class SubmitTaskServiceImpl implements SubmitTaskService {
         // 获取相差天数
         long day = DateUtil.betweenDay(endDay, submitDay, false);
         // 通过配置计算分数
-        float points =  day * config.getPointsPerDay();
+        float points =  (day+1) * config.getPointsPerDay();
         // 如果扣分大于最大扣分数，返回最大扣分数
         if (config.getMaxDeductedPoints() != 0 && points > config.getMaxDeductedPoints()) {
             return config.getMaxDeductedPoints();

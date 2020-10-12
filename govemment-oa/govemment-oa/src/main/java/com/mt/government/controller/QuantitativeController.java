@@ -63,11 +63,11 @@ public class QuantitativeController {
      * @return 查询结果
      */
     @GetMapping("/findByUserId")
-    public Result findByUserId(String userId) {
+    public Result findByUserId(String userId,String partySecretary) {
         if (userId == null) {
             return ResultUtil.error("操作失败");
         }
-        return ResultUtil.success(quantitativeService.findByUserId(userId));
+        return ResultUtil.success(quantitativeService.findByUserId(userId,partySecretary));
     }
 
     /**
