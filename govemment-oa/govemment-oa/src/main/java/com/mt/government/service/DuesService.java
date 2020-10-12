@@ -43,7 +43,7 @@ public interface DuesService {
      * @param userId 用户id
      * @return 信息列表
      */
-    Result getDuesInfoByUser(String userId);
+//    Result getDuesInfoByUser(String userId);
 
     /**
      * 将excel文件中的数据导入党费

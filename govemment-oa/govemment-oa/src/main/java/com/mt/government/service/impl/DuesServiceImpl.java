@@ -56,8 +56,8 @@ public class DuesServiceImpl implements DuesService {
         return due2Mapper.deleteByPrimaryKey(id);
     }
 
-    @Override
-    public Result getDuesInfoByUser(String userId) {
+//    @Override
+//    public Result getDuesInfoByUser(String userId) {
         // 获取文件地址
         /*Dues dues = duesMapper.selectLatestRecordByUserId(userId);
         if (dues == null) {
@@ -72,12 +72,12 @@ public class DuesServiceImpl implements DuesService {
         map.put("dues" , dues);
         map.put("list" , data);
         reader.close();*/
-        Example example = new Example(Due2.class);
-        example.orderBy("createTime").asc();
-        example.createCriteria().andEqualTo("userId", userId);
-        List<Due2> due2s = due2Mapper.selectByExample(example);
-        return ResultUtil.success(due2s);
-    }
+//        Example example = new Example(Due2.class);
+//        example.orderBy("createTime").asc();
+//        example.createCriteria().andEqualTo("userId", userId);
+//        List<Due2> due2s = due2Mapper.selectByExample(example);
+//        return ResultUtil.success(due2s);
+//    }
 
     @Override
     //@Transactional

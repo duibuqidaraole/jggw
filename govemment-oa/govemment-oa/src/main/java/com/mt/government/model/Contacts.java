@@ -1,9 +1,11 @@
 package com.mt.government.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -62,4 +64,18 @@ public class Contacts {
      */
     @Column(name = "update_time")
     private Date updateTime;
+
+
+    @JsonFormat(timezone = "GMT+8" , pattern = "yyyy-MM-dd")
+    @Column(name = "on_work_time")
+    private String onWorkTime; // 任现党内职务时间
+
+    @Transient
+    private String orgName;
+
+
+
+
+
+
 }

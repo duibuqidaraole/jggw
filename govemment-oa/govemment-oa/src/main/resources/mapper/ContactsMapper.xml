@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.mt.government.mapper.ContactsMapper">
-    <resultMap id="BaseResultMap" type="com.mt.government.model.Contacts">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="id" property="id" jdbcType="INTEGER"/>
-        <result column="linkman" property="linkman" jdbcType="VARCHAR"/>
-        <result column="gender" property="gender" jdbcType="INTEGER"/>
-        <result column="telephone" property="telephone" jdbcType="VARCHAR"/>
-        <result column="position" property="position" jdbcType="VARCHAR"/>
-        <result column="address" property="address" jdbcType="VARCHAR"/>
-        <result column="user_id" property="userId" jdbcType="INTEGER"/>
-        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
-        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
-    </resultMap>
+    <!--<resultMap id="BaseResultMap" type="com.mt.government.model.Contacts">-->
+        <!--&lt;!&ndash;-->
+          <!--WARNING - @mbg.generated-->
+        <!--&ndash;&gt;-->
+        <!--<id column="id" property="id" jdbcType="INTEGER"/>-->
+        <!--<result column="linkman" property="linkman" jdbcType="VARCHAR"/>-->
+        <!--<result column="gender" property="gender" jdbcType="INTEGER"/>-->
+        <!--<result column="telephone" property="telephone" jdbcType="VARCHAR"/>-->
+        <!--<result column="position" property="position" jdbcType="VARCHAR"/>-->
+        <!--<result column="address" property="address" jdbcType="VARCHAR"/>-->
+        <!--<result column="user_id" property="userId" jdbcType="INTEGER"/>-->
+        <!--<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>-->
+        <!--<result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>-->
+    <!--</resultMap>-->
+
+    <select id="selectAllContacts" resultType="com.mt.government.model.Contacts">
+SELECT
+	t1.id,
+	t1.linkman,
+	t1.position,
+	t1.gender,
+	t1.telephone,
+	t1.address,
+	t1.on_work_time onWorkTime,
+    t2.org_name orgName
+
+
+FROM contacts t1
+LEFT JOIN `user` t2 on t1.user_Id = t2.user_id
+    </select>
 </mapper>

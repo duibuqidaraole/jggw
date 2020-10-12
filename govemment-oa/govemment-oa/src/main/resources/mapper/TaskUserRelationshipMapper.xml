@@ -19,16 +19,39 @@
         <result column="deducted" property="deducted" jdbcType="INTEGER"/>
     </resultMap>
 
-    <select id="findCommonTaskDetail" resultMap="CommonTaskDetailVoMap">
-        SELECT u.org_name, t.*,u.`user_id`
-        FROM `user` u,
-        (SELECT r.*, s.submit_id, s.is_overtime, s.deducted, s.submit_time
-        FROM task_user_relationship r
-        LEFT JOIN task_submit_info s
-        ON r.task_id = s.common_task_id AND r.receiver_id = s.user_id) t
-        WHERE u.user_id = t.receiver_id AND t.task_id = #{taskId}
-        <if test="status != null">
-            AND t.receiver_status = #{status}
-        </if>
-    </select>
+    <!--<select id="findCommonTaskDetail" resultMap="CommonTaskDetailVoMap">-->
+        <!--SELECT u.org_name, t.*,u.`user_id`-->
+        <!--FROM `user` u,-->
+        <!--(SELECT r.*, s.submit_id, s.is_overtime, s.deducted, s.submit_time-->
+        <!--FROM task_user_relationship r-->
+        <!--LEFT JOIN task_submit_info s-->
+        <!--ON r.task_id = s.common_task_id AND r.receiver_id = s.user_id) t-->
+        <!--WHERE u.user_id = t.receiver_id AND t.task_id = #{taskId}-->
+        <!--<if test="status != null">-->
+            <!--AND t.receiver_status = #{status}-->
+        <!--</if>-->
+        <!--ORDER BY s.submit_time DESC-->
+    <!--</select>-->
+
+<select id="findCommonTaskDetail" resultMap="CommonTaskDetailVoMap">
+    SELECT
+    r.*, s.submit_id,
+    s.is_overtime,
+    s.deducted,
+    s.submit_time,
+    u.user_id,
+    u.org_name
+    FROM
+    task_user_relationship r
+    LEFT JOIN task_submit_info s ON r.task_id = s.common_task_id
+    AND r.receiver_id = s.user_id
+    LEFT JOIN user u ON s.user_id = u.user_id
+
+    WHERE r.task_id = #{taskId}
+
+    <if test="status != null">
+    AND r.receiver_status = #{status}
+    </if>
+    ORDER BY s.submit_time DESC
+</select>
 </mapper>

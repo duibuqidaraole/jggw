@@ -3,14 +3,18 @@ package com.mt.government.controller;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import com.github.pagehelper.PageHelper;
 import com.mt.government.common.exception.GlobalException;
 import com.mt.government.common.util.FileUtils;
+import com.mt.government.mapper.Due2Mapper;
+import com.mt.government.mapper.DuesMapper;
 import com.mt.government.mapper.OrganizationMapper;
 import com.mt.government.mapper.UserMapper;
 import com.mt.government.model.Due2;
 import com.mt.government.model.Dues;
 import com.mt.government.model.Organization;
 import com.mt.government.model.User;
+import com.mt.government.model.vo.PagedResult;
 import com.mt.government.service.DuesService;
 import com.mt.government.service.UserService;
 import com.mt.government.utils.MyExcelUtil;
@@ -62,6 +66,9 @@ public class DueController extends BaseController {
     private UserMapper userMapper;
 
     @Autowired
+    private Due2Mapper due2Mapper;
+
+    @Autowired
     private OrganizationMapper organizationMapper;
 
     private static String EXCELDIR = "demo/";
@@ -79,9 +86,9 @@ public class DueController extends BaseController {
      * @return
      */
     @GetMapping("/export")
-    public void add(HttpServletRequest request,HttpServletResponse response,String userId) throws Exception {
+    public void add(HttpServletRequest request,HttpServletResponse response) throws Exception {
 
-//        String userId = getCurrentUser(request).getUserId(); // 获取到userId
+        String userId = getCurrentUser(request).getUserId(); // 获取到userId
 
         List<Map> mapList =new ArrayList<>();
         String organId = null;
@@ -155,8 +162,15 @@ public class DueController extends BaseController {
      * 获取用户党费信息
      */
     @GetMapping("/getDueInfo")
-    public Result getDueInfo(String userId) {
-        return duesService.getDuesInfoByUser(userId);
+    public Result getDueInfo(String userId,Integer page,Integer pageSize) {
+        // 开启分页
+        PageHelper.startPage(page, pageSize);
+        Example example = new Example(Due2.class);
+        example.orderBy("createTime").asc();
+        example.createCriteria().andEqualTo("userId", userId);
+        List<Due2> due2s = due2Mapper.selectByExample(example);
+
+        return ResultUtil.success(PagedResult.commonResult(due2s));
     }
 
 

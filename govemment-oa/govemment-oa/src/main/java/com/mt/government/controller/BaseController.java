@@ -1,5 +1,6 @@
 package com.mt.government.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.mt.government.model.User;
 import com.mt.government.utils.RedisUtil;
@@ -10,6 +11,9 @@ import org.springframework.util.ResourceUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 通用控制层
@@ -37,5 +41,16 @@ public class BaseController {
 
     protected String getClasspath() throws FileNotFoundException {
         return ResourceUtils.getURL("classpath:").getPath();
+    }
+
+
+    public static void main(String[] args) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date parse = simpleDateFormat.parse("2020-08-10 00:00:00");
+        Date parse1 = simpleDateFormat.parse("2020-08-11 00:00:00");
+        int compare = DateUtil.compare(parse, parse1);
+        System.out.println(compare);
+
+
     }
 }

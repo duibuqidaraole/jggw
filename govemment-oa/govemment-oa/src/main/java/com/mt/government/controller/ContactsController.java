@@ -1,12 +1,28 @@
 package com.mt.government.controller;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
+import com.mt.government.mapper.ContactsMapper;
+import com.mt.government.mapper.UserMapper;
 import com.mt.government.model.Contacts;
+import com.mt.government.model.Due2;
+import com.mt.government.model.User;
 import com.mt.government.service.ContactsService;
+import com.mt.government.utils.MyExcelUtil;
 import com.mt.government.utils.Result;
 import com.mt.government.utils.ResultUtil;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import tk.mybatis.mapper.entity.Example;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * 联系人控制层
@@ -20,6 +36,13 @@ import org.springframework.web.bind.annotation.*;
 public class ContactsController {
     @Autowired
     private ContactsService contactsService;
+
+    @Autowired
+    private ContactsMapper contactsMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
 
     /**
      * 查询单个联系人信息
@@ -94,4 +117,101 @@ public class ContactsController {
         }
         return ResultUtil.success(contactsService.delete(id));
     }
+
+
+
+
+
+
+
+    /**
+     * 导出通讯录信息
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/export")
+    public void export(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // 查询出需要导出的list数据
+       List<Contacts> list =   contactsMapper.selectAllContacts();
+
+        String headArr [] = {"linkman","position","gender","telephone","address","onWorkTime","orgName"};
+        String headArrAlias [] = {"姓名","职务","性别","手机","办公室","任现党内职务时间","所属组织机构"};
+//        // 将list导出到excel表格中
+        MyExcelUtil.getExcel(response,list,"通讯录信息.xls",headArr,headArrAlias);
+    }
+
+
+
+    /**
+     * 通讯录信息导入
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/import")
+    public Result importExcel(MultipartFile file) throws Exception {
+
+        if(StringUtils.isEmpty(file)){
+            return ResultUtil.error("file不能为空");
+        }
+
+        Contacts contacts = new Contacts();
+        ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
+        if (reader.readAll().size() > 0) { // excel中存在数据
+//            List<Map<String, Object>> read = reader.read(1, 2, 2147483647);
+            List<Map<String, Object>> read = reader.readAll();
+            for (int i = 0; i < read.size(); i++) {
+
+                if(!StringUtils.isEmpty(read.get(i).get("姓名"))){
+                    contacts.setLinkman(read.get(i).get("姓名").toString());
+                }
+                if(!StringUtils.isEmpty(read.get(i).get("职务"))){
+                    contacts.setPosition(read.get(i).get("职务").toString());
+                }
+                if(!StringUtils.isEmpty(read.get(i).get("性别"))){
+                    contacts.setGender(Integer.parseInt(read.get(i).get("性别").toString()));
+                }
+
+                if(StringUtils.isEmpty(read.get(i).get("电话号码"))){
+                    return ResultUtil.error("第"+ i+"行，电话号码不能为空");
+                }
+                String telephone = read.get(i).get("电话号码").toString();
+
+                if(!StringUtils.isEmpty(read.get(i).get("办公室"))){
+                    contacts.setAddress(read.get(i).get("办公室").toString());
+                }
+                if(!StringUtils.isEmpty(read.get(i).get("现党内职务时间"))){
+                    contacts.setOnWorkTime(read.get(i).get("现党内职务时间").toString());
+                }
+                if(StringUtils.isEmpty(read.get(i).get("所属组织机构"))){
+                    return ResultUtil.error("第"+ i+"行，所属组织机构不能为空");
+                }
+                // 组织机构名称
+                String orgName =  read.get(i).get("所属组织机构").toString();
+                // 获取到对应的userId
+                User user = new User();
+                user.setOrgName(orgName);
+                User user1 = userMapper.selectOne(user);
+                String userId = user1.getUserId();
+                if(StringUtils.isEmpty(userId)){ // 为空
+                    return ResultUtil.error("该组织机构对应的用户id不存在，请确认数据重新导入！！！");
+                }
+                // 将userId设置进Contacts对象中去
+                contacts.setUserId(userId);
+
+                // 设置新增时间和修改时间
+                contacts.setCreateTime(new Date());
+                contacts.setUpdateTime(new Date());
+
+            }
+            return ResultUtil.success();
+
+        }
+        return ResultUtil.error("excle表格不为空!");
+    }
+
+
+
 }

@@ -35,7 +35,7 @@ public class ShiroConfig {
         filterRuleMap.put("/images/**" , "anon");
         filterRuleMap.put("/login" , "anon");
         filterRuleMap.put("/file/**" , "anon");
-        filterRuleMap.put("/**" , "login");
+//        filterRuleMap.put("/**" , "login");
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);
 
         return factoryBean;
