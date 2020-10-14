@@ -157,13 +157,14 @@ public class ContactsController {
             return ResultUtil.error("file不能为空");
         }
 
-        Contacts contacts = new Contacts();
+
         ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
         if (reader.readAll().size() > 0) { // excel中存在数据
 //            List<Map<String, Object>> read = reader.read(1, 2, 2147483647);
             List<Map<String, Object>> read = reader.readAll();
             for (int i = 0; i < read.size(); i++) {
 
+                Contacts contacts = new Contacts();
                 if(!StringUtils.isEmpty(read.get(i).get("姓名"))){
                     contacts.setLinkman(read.get(i).get("姓名").toString());
                 }
@@ -174,10 +175,10 @@ public class ContactsController {
                     contacts.setGender(Integer.parseInt(read.get(i).get("性别").toString()));
                 }
 
-                if(StringUtils.isEmpty(read.get(i).get("电话号码"))){
-                    return ResultUtil.error("第"+ i+"行，电话号码不能为空");
+                if(StringUtils.isEmpty(read.get(i).get("手机"))){
+                    return ResultUtil.error("第"+ i+"行，手机不能为空");
                 }
-                String telephone = read.get(i).get("电话号码").toString();
+                String telephone = read.get(i).get("手机").toString();
 
                 if(!StringUtils.isEmpty(read.get(i).get("办公室"))){
                     contacts.setAddress(read.get(i).get("办公室").toString());
@@ -205,6 +206,10 @@ public class ContactsController {
                 contacts.setCreateTime(new Date());
                 contacts.setUpdateTime(new Date());
 
+                int insert = contactsMapper.insert(contacts);
+                if(insert < 0){ //
+                    return ResultUtil.error("新增失败！！！");
+                }
             }
             return ResultUtil.success();
 
