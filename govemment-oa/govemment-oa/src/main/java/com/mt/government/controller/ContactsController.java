@@ -1,24 +1,20 @@
 package com.mt.government.controller;
 
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.mt.government.mapper.ContactsMapper;
 import com.mt.government.mapper.UserMapper;
 import com.mt.government.model.Contacts;
-import com.mt.government.model.Due2;
 import com.mt.government.model.User;
 import com.mt.government.service.ContactsService;
 import com.mt.government.utils.MyExcelUtil;
 import com.mt.government.utils.Result;
 import com.mt.government.utils.ResultUtil;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -157,8 +153,8 @@ public class ContactsController {
             return ResultUtil.error("file不能为空");
         }
 
-
         ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
+        int cnt =  reader.readAll().size();
         if (reader.readAll().size() > 0) { // excel中存在数据
 //            List<Map<String, Object>> read = reader.read(1, 2, 2147483647);
             List<Map<String, Object>> read = reader.readAll();
@@ -179,12 +175,13 @@ public class ContactsController {
                     return ResultUtil.error("第"+ i+"行，手机不能为空");
                 }
                 String telephone = read.get(i).get("手机").toString();
+                contacts.setTelephone(telephone);
 
                 if(!StringUtils.isEmpty(read.get(i).get("办公室"))){
                     contacts.setAddress(read.get(i).get("办公室").toString());
                 }
-                if(!StringUtils.isEmpty(read.get(i).get("现党内职务时间"))){
-                    contacts.setOnWorkTime(read.get(i).get("现党内职务时间").toString());
+                if(!StringUtils.isEmpty(read.get(i).get("任现党内职务时间"))){
+                    contacts.setOnWorkTime(read.get(i).get("任现党内职务时间").toString());
                 }
                 if(StringUtils.isEmpty(read.get(i).get("所属组织机构"))){
                     return ResultUtil.error("第"+ i+"行，所属组织机构不能为空");

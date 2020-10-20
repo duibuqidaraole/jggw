@@ -9,6 +9,8 @@ import com.mt.government.service.UserService;
 import com.mt.government.utils.RedisUtil;
 import com.mt.government.utils.Result;
 import com.mt.government.utils.ResultUtil;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -128,5 +130,9 @@ public class QuantitativeController {
             return ResultUtil.success(ref);
         }
         return ResultUtil.error("删除失败");
+    }
+
+    public static void main(String[] args) {
+//        SqlSession sqlSession = new SqlSessionFactoryBuilder().build();
     }
 }
