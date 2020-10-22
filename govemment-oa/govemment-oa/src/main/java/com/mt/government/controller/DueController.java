@@ -1,33 +1,18 @@
 package com.mt.government.controller;
 
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.mt.government.common.exception.GlobalException;
 import com.mt.government.common.util.FileUtils;
 import com.mt.government.mapper.Due2Mapper;
-import com.mt.government.mapper.DuesMapper;
 import com.mt.government.mapper.OrganizationMapper;
 import com.mt.government.mapper.UserMapper;
-import com.mt.government.model.Due2;
-import com.mt.government.model.Dues;
-import com.mt.government.model.Organization;
-import com.mt.government.model.User;
+import com.mt.government.model.*;
 import com.mt.government.model.vo.PagedResult;
 import com.mt.government.service.DuesService;
-import com.mt.government.service.UserService;
 import com.mt.government.utils.MyExcelUtil;
 import com.mt.government.utils.Result;
 import com.mt.government.utils.ResultUtil;
-import org.apache.poi.hssf.converter.ExcelToHtmlConverter;
-import org.apache.poi.hssf.converter.ExcelToHtmlUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
@@ -38,13 +23,6 @@ import tk.mybatis.mapper.entity.Example;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.util.*;
 
@@ -79,14 +57,14 @@ public class DueController extends BaseController {
     /**
      * 导出每月党费信息
      *
-     * @param request
+     * @param
      * @return
      */
     @GetMapping("/export")
-    public void add(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        String userId = getCurrentUser(request).getUserId(); // 获取到userId
-
+    public void add(String userId, HttpServletResponse response) throws Exception {
+        if (StringUtils.isEmpty(userId)) {
+            throw new GlobalException("userId不能为空", -1);
+        }
         List<Map> mapList = new ArrayList<>();
         String organId = null;
 
@@ -241,5 +219,30 @@ public class DueController extends BaseController {
         } catch (Exception e) {
             throw new GlobalException("下载党费样表失败", -1);
         }
+    }
+
+    /**
+     * 添加扣分信息
+     *
+     * @param due2
+     * @return
+     */
+    @PostMapping("addReason")
+    public Result addReason(@RequestBody Due2 due2) {
+        if (StringUtils.isEmpty(due2.getPoint())) {
+            return ResultUtil.error("分值不能为空");
+        }
+        if (StringUtils.isEmpty(due2.getReason())) {
+            return ResultUtil.error("扣分原因不能为空");
+        }
+        if (StringUtils.isEmpty(due2.getId())) {
+            return ResultUtil.error("id不能为空");
+        }
+
+        Example example = new Example(Due2.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id", due2.getId());
+        due2Mapper.updateByExampleSelective(due2, example);
+        return ResultUtil.success();
     }
 }

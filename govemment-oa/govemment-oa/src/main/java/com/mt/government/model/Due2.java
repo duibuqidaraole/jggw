@@ -113,6 +113,206 @@ public class Due2 implements Serializable {
     @Column(name = "update_time")
     private Date updateTime;
 
+    private String reason;
+
+    private Integer point;
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public Integer getPoint() {
+        return point;
+    }
+
+    public void setPoint(Integer point) {
+        this.point = point;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getNo() {
+        return no;
+    }
+
+    public void setNo(String no) {
+        this.no = no;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getJobSalary() {
+        return jobSalary;
+    }
+
+    public void setJobSalary(String jobSalary) {
+        this.jobSalary = jobSalary;
+    }
+
+    public String getLevelSalary() {
+        return levelSalary;
+    }
+
+    public void setLevelSalary(String levelSalary) {
+        this.levelSalary = levelSalary;
+    }
+
+    public String getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(String bonus) {
+        this.bonus = bonus;
+    }
+
+    public String getAllowance() {
+        return allowance;
+    }
+
+    public void setAllowance(String allowance) {
+        this.allowance = allowance;
+    }
+
+    public String getMonthTotal() {
+        return monthTotal;
+    }
+
+    public void setMonthTotal(String monthTotal) {
+        this.monthTotal = monthTotal;
+    }
+
+    public String getMedicalInsurance() {
+        return medicalInsurance;
+    }
+
+    public void setMedicalInsurance(String medicalInsurance) {
+        this.medicalInsurance = medicalInsurance;
+    }
+
+    public String getProvidentFund() {
+        return providentFund;
+    }
+
+    public void setProvidentFund(String providentFund) {
+        this.providentFund = providentFund;
+    }
+
+    public String getTax() {
+        return tax;
+    }
+
+    public void setTax(String tax) {
+        this.tax = tax;
+    }
+
+    public String getSocialInsurance() {
+        return socialInsurance;
+    }
+
+    public void setSocialInsurance(String socialInsurance) {
+        this.socialInsurance = socialInsurance;
+    }
+
+    public String getOtherDeduct() {
+        return otherDeduct;
+    }
+
+    public void setOtherDeduct(String otherDeduct) {
+        this.otherDeduct = otherDeduct;
+    }
+
+    public String getPayBase() {
+        return payBase;
+    }
+
+    public void setPayBase(String payBase) {
+        this.payBase = payBase;
+    }
+
+    public String getInService() {
+        return inService;
+    }
+
+    public void setInService(String inService) {
+        this.inService = inService;
+    }
+
+    public String getPayPercent() {
+        return payPercent;
+    }
+
+    public void setPayPercent(String payPercent) {
+        this.payPercent = payPercent;
+    }
+
+    public String getMonthlyDues() {
+        return monthlyDues;
+    }
+
+    public void setMonthlyDues(String monthlyDues) {
+        this.monthlyDues = monthlyDues;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public Due2(String userId, String no, String name, String position, String jobSalary, String levelSalary, String bonus, String allowance, String monthTotal, String medicalInsurance, String providentFund, String tax, String socialInsurance, String otherDeduct, String payBase, String inService, String payPercent, String monthlyDues, String remark, Date createTime, Date updateTime) {
         this.userId = userId;
         this.no = no;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.government.mapper.ActivistMapper">
+    <resultMap id="BaseResultMap" type="com.mt.government.model.Activist">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="org_name" property="orgName" jdbcType="VARCHAR"/>
+        <result column="activist_name" property="activistName" jdbcType="VARCHAR"/>
+        <result column="sqlo_time" property="sqloTime" jdbcType="TIMESTAMP"/>
+        <result column="apa_time" property="apaTime" jdbcType="TIMESTAMP"/>
+        <result column="do_time" property="doTime" jdbcType="TIMESTAMP"/>
+        <result column="ppm_time" property="ppmTime" jdbcType="TIMESTAMP"/>
+        <result column="fmp_time" property="fmpTime" jdbcType="TIMESTAMP"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    </resultMap>
+</mapper>

@@ -66,16 +66,16 @@ public class Contacts {
     private Date updateTime;
 
 
-    @JsonFormat(timezone = "GMT+8" , pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @Column(name = "on_work_time")
     private String onWorkTime; // 任现党内职务时间
 
     @Transient
     private String orgName;
 
+    private String reason;
 
-
-
+    private Integer point;
 
 
 }
