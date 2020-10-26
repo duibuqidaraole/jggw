@@ -86,4 +86,12 @@ public class CommonTaskInfo {
 
     private User user;
 
+    /**
+     * 是否加入考核
+     * 0 未加入
+     * 1 加入
+     */
+    @Column(name = "isExamine")
+    private boolean isExamine;
+
 }
