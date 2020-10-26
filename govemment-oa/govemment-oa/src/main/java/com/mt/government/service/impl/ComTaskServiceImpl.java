@@ -139,7 +139,7 @@ public class ComTaskServiceImpl implements ComTaskService {
     }
 
     @Override
-    public int update(PublishTaskDto commonTaskInfo) {
+    public int update(PublishTaskDto commonTaskInfo) { 
         // 更新任务
         int ref = commonTaskInfoMapper.updateByPrimaryKeySelective(commonTaskInfo.getCommonTaskInfo());
         return ref;

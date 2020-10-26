@@ -1,7 +1,10 @@
 package com.mt.government.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 import javax.persistence.*;
+import javax.xml.crypto.Data;
 
 public class Activist {
     /**
@@ -67,6 +70,30 @@ public class Activist {
      */
     @Column(name = "user_id")
     private String userId;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @Column(name = "update_sqlo_time")
+    private Date updateSqloTime;  // 最新时间更新
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @Column(name = "temp_time")
+    private Date tempTime;// 临时时间
+
+    public Date getTempTime() {
+        return tempTime;
+    }
+
+    public void setTempTime(Date tempTime) {
+        this.tempTime = tempTime;
+    }
+
+    public Date getUpdateSqloTime() {
+        return updateSqloTime;
+    }
+
+    public void setUpdateSqloTime(Date updateSqloTime) {
+        this.updateSqloTime = updateSqloTime;
+    }
 
     /**
      * 获取自增id

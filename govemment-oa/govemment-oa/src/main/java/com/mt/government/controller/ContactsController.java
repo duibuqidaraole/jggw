@@ -5,7 +5,6 @@ import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.mt.government.mapper.ContactsMapper;
 import com.mt.government.mapper.UserMapper;
-import com.mt.government.model.Activist;
 import com.mt.government.model.Contacts;
 import com.mt.government.model.User;
 import com.mt.government.service.ContactsService;
